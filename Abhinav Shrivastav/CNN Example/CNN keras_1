@@ -1,0 +1,37 @@
+import tensorflow as tf
+
+mnist = tf.keras.datasets.mnist #28x28 images of hand-written digits 0-9
+
+(x_train, y_train),(x_test, y_test) = mnist.load_data()
+
+x_train = tf.keras.utils.normalize(x_train, axis=1) # We normalize these so that values will lie b/w 0 & 1. So that it will be easy 
+x_test = tf.keras.utils.normalize(x_test, axis=1)
+
+model = tf.keras.models.Sequential() #Sequential - A sequential model is what you're going to use most of the time. It just means things are going to go in direct order. A feed forward model.
+model.add(tf.keras.layers.Flatten()) #flatten is used to make the image flat i.e. 28x28 to 1x784
+model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu)) #128 is the no. of units or neuron.
+model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax)) # our activation function is a softmax function, since we're really actually looking for something more like a probability distribution. 
+# Our last layer has 10 nodes. 1 node per possible number prediction.
+
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy']) #For tracking accuracy
+#Loss is a calculation of error. A neural network doesn't actually attempt to maximize accuracy. It attempts to minimize loss.
+
+model.fit(x_train, y_train, epochs=3) #For fitting the model
+
+
+
+val_loss, val_acc = model.evaluate(x_test, y_test)
+print(val_loss)
+print(val_acc)
+
+
+import matplotlib.pyplot as plt
+
+plt.imshow(x_train[0])
+plt.show()
+print(x_train[0])
+
+
